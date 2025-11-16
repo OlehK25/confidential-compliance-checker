@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C3 - Confidential Compliance Checker</title>
+
+    <style>
+        /* ============================================
+           CYBER THEME - FUTURISTIC COMPLIANCE CHECKER
+           ============================================ */
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #13131a;
+            --bg-tertiary: #1a1a24;
+            --accent-cyan: #00f0ff;
+            --accent-purple: #9d00ff;
+            --accent-pink: #ff0080;
+            --text-primary: #ffffff;
+            --text-secondary: #a8a8b8;
+            --border-color: rgba(0, 240, 255, 0.3);
+            --success-color: #00ff88;
+            --error-color: #ff0055;
+            --warning-color: #ffaa00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* ============================================
+           BACKGROUND EFFECTS
+           ============================================ */
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* ============================================
+           CONTAINER & LAYOUT
+           ============================================ */
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================
+           HEADER
+           ============================================ */
+
+        .header {
+            background: linear-gradient(135deg, rgba(13, 13, 26, 0.9), rgba(26, 26, 36, 0.8));
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 240, 255, 0.1);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .hex-logo {
+            width: 60px;
+            height: 60px;
+        }
+
+        .hex-shape {
+            fill: none;
+            stroke: var(--accent-cyan);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 10px var(--accent-cyan));
+            animation: pulse-hex 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-hex {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .hex-text {
+            fill: var(--accent-cyan);
+            font-size: 28px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        /* ============================================
+           CYBER BUTTON
+           ============================================ */
+
+        .cyber-button {
+            position: relative;
+            background: transparent;
+            border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+        }
+
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cyber-button:hover::before {
+            left: 100%;
+        }
+
+        .cyber-button:hover {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .cyber-button.primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            color: white;
+        }
+
+        .cyber-button.small {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        .button-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .button-icon {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+        }
+
+        .cyber-button.connected {
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        /* ============================================
+           STATUS BAR
+           ============================================ */
+
+        .status-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(26, 26, 36, 0.6), rgba(19, 19, 26, 0.6));
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .status-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-value {
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        /* ============================================
+           ROLE SELECTOR
+           ============================================ */
+
+        .role-selector {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .role-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1.2rem;
+            background: rgba(26, 26, 36, 0.6);
+            border: 2px solid transparent;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+
+        .role-tab:hover {
+            background: rgba(26, 26, 36, 0.9);
+            border-color: var(--border-color);
+        }
+
+        .role-tab.active {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(157, 0, 255, 0.1));
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .role-icon {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+
+        /* ============================================
+           PANELS
+           ============================================ */
+
+        .panel {
+            display: none;
+            background: linear-gradient(135deg, rgba(26, 26, 36, 0.8), rgba(19, 19, 26, 0.8));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel.active {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px var(--accent-cyan));
+        }
+
+        .panel-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           FORM STYLES
+           ============================================ */
+
+        .cyber-form {
+            margin: 2rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.7rem;
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(26, 26, 36, 0.6);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* ============================================
+           PROGRESS STEPS
+           ============================================ */
+
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: rgba(26, 26, 36, 0.4);
+            border-radius: 10px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step.completed {
+            opacity: 1;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: rgba(0, 240, 255, 0.1);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-icon {
+            background: rgba(0, 240, 255, 0.2);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            animation: pulse-step 1.5s ease-in-out infinite;
+        }
+
+        .step.completed .step-icon {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--success-color);
+        }
+
+        @keyframes pulse-step {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .step.active .step-label {
+            color: var(--accent-cyan);
+        }
+
+        .step-line {
+            width: 100px;
+            height: 2px;
+            background: var(--border-color);
+            margin: 0 1rem;
+        }
+
+        /* ============================================
+           RESULTS
+           ============================================ */
+
+        .results-container {
+            margin: 2rem 0;
+            animation: slideIn 0.4s ease;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(26, 26, 36, 0.8), rgba(19, 19, 26, 0.8));
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+        }
+
+        .result-status {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+
+        .result-status.compliant {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .result-status.non-compliant {
+            background: rgba(255, 0, 85, 0.1);
+            border: 2px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .result-details {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(26, 26, 36, 0.5);
+            border-radius: 6px;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* ============================================
+           ENTITY LIST
+           ============================================ */
+
+        .entity-list {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(26, 26, 36, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .list-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--accent-purple);
+        }
+
+        .entity-count {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding: 1rem;
+            background: rgba(157, 0, 255, 0.1);
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid rgba(157, 0, 255, 0.3);
+        }
+
+        /* ============================================
+           LOGS PANEL
+           ============================================ */
+
+        .logs-panel {
+            margin: 3rem 0;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(26, 26, 36, 0.6);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logs-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logs-icon {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+
+        .logs-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .log-entry {
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--border-color);
+            background: rgba(26, 26, 36, 0.3);
+            animation: logFadeIn 0.3s ease;
+        }
+
+        @keyframes logFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .log-entry.info {
+            border-left-color: var(--accent-cyan);
+        }
+
+        .log-entry.success {
+            border-left-color: var(--success-color);
+        }
+
+        .log-entry.error {
+            border-left-color: var(--error-color);
+        }
+
+        .log-entry.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .log-time {
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .log-message {
+            color: var(--text-primary);
+        }
+
+        /* Scrollbar Styles */
+        .logs-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .logs-content::-webkit-scrollbar-track {
+            background: rgba(26, 26, 36, 0.4);
+        }
+
+        .logs-content::-webkit-scrollbar-thumb {
+            background: var(--accent-cyan);
+            border-radius: 4px;
+        }
+
+        .logs-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .header .container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.4rem;
+            }
+
+            .panel {
+                padding: 1.5rem;
+            }
+
+            .panel-title {
+                font-size: 1.5rem;
+            }
+
+            .role-selector {
+                flex-direction: column;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+            }
+
+            .step-line {
+                width: 2px;
+                height: 50px;
+                margin: 0.5rem 0;
+            }
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px var(--accent-cyan), 0 0 10px var(--accent-cyan);
+            }
+            50% {
+                box-shadow: 0 0 20px var(--accent-cyan), 0 0 30px var(--accent-cyan);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="cyber-grid"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <div class="hex-logo">
+                    <svg viewBox="0 0 100 100">
+                        <polygon points="50,10 90,30 90,70 50,90 10,70 10,30" class="hex-shape"/>
+                        <text x="50" y="60" class="hex-text">C3</text>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Confidential Compliance Checker</h1>
+                    <p class="subtitle">Privacy-Preserving Sanctions Verification</p>
+                </div>
+            </div>
+            <button id="connectWallet" class="cyber-button">
+                <span class="button-content">Connect Wallet</span>
+                <span class="button-glow"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Status Bar -->
+            <div class="status-bar" id="statusBar">
+                <div class="status-item">
+                    <span class="status-label">Network:</span>
+                    <span class="status-value" id="networkStatus">Not Connected</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Wallet:</span>
+                    <span class="status-value" id="walletStatus">0x0...0000</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Contract:</span>
+                    <span class="status-value" id="contractStatus">Ready</span>
+                </div>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="role-selector">
+                <button class="role-tab active" data-role="user">
+                    <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    User
+                </button>
+                <button class="role-tab" data-role="officer">
+                    <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Compliance Officer
+                </button>
+            </div>
+
+            <!-- User Panel -->
+            <div class="panel user-panel active" id="userPanel">
+                <h2 class="panel-title">
+                    <span class="title-icon">🔐</span>
+                    Check Your Compliance Status
+                </h2>
+                <p class="panel-description">
+                    Submit your encrypted personal data to verify compliance without revealing sensitive information
+                </p>
+
+                <form id="complianceForm" class="cyber-form">
+                    <div class="form-group">
+                        <label for="userName">Full Name</label>
+                        <input type="text" id="userName" placeholder="Enter your full name" required>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userCountry">Country Code (ISO)</label>
+                        <input type="text" id="userCountry" placeholder="e.g., US, GB, UA" maxlength="3" required>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userWallet">Wallet Address</label>
+                        <input type="text" id="userWallet" placeholder="0x..." required>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <button type="submit" class="cyber-button primary">
+                        <span class="button-content">
+                            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                            Check Compliance
+                        </span>
+                        <span class="button-glow"></span>
+                    </button>
+                </form>
+
+                <!-- Progress Steps -->
+                <div class="progress-steps" id="progressSteps">
+                    <div class="step" data-step="1">
+                        <div class="step-icon">🔐</div>
+                        <div class="step-label">Encrypt</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="2">
+                        <div class="step-icon">📡</div>
+                        <div class="step-label">Send TX</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="3">
+                        <div class="step-icon">🔓</div>
+                        <div class="step-label">Decrypt</div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="results-container" id="resultsContainer" style="display: none;">
+                    <h3 class="results-title">Compliance Check Result</h3>
+                    <div class="result-card" id="resultCard">
+                        <div class="result-status" id="resultStatus"></div>
+                        <div class="result-details">
+                            <div class="result-item">
+                                <span class="result-label">Check ID:</span>
+                                <span class="result-value" id="checkId">-</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Timestamp:</span>
+                                <span class="result-value" id="checkTimestamp">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Officer Panel -->
+            <div class="panel officer-panel" id="officerPanel">
+                <h2 class="panel-title">
+                    <span class="title-icon">⚔️</span>
+                    Manage Sanctioned Entities
+                </h2>
+                <p class="panel-description">
+                    Add or manage sanctioned entities using encrypted data
+                </p>
+
+                <form id="sanctionForm" class="cyber-form">
+                    <div class="form-group">
+                        <label for="entityName">Entity Name</label>
+                        <input type="text" id="entityName" placeholder="Enter entity name" required>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entityCountry">Country Code</label>
+                        <input type="text" id="entityCountry" placeholder="e.g., US, GB, UA" maxlength="3" required>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entityWallet">Wallet Address</label>
+                        <input type="text" id="entityWallet" placeholder="0x..." required>
+                        <div class="input-glow"></div>
+                    </div>
+
+                    <button type="submit" class="cyber-button primary">
+                        <span class="button-content">
+                            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Sanctioned Entity
+                        </span>
+                        <span class="button-glow"></span>
+                    </button>
+                </form>
+
+                <!-- Entity List -->
+                <div class="entity-list" id="entityList">
+                    <h3 class="list-title">Sanctioned Entities</h3>
+                    <div class="entity-count">
+                        Total Entities: <span id="entityCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Panel -->
+            <div class="logs-panel">
+                <div class="logs-header">
+                    <h3 class="logs-title">
+                        <svg class="logs-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="4 17 10 11 4 5"></polyline>
+                            <line x1="12" y1="19" x2="20" y2="19"></line>
+                        </svg>
+                        Transaction Logs
+                    </h3>
+                    <button id="clearLogs" class="cyber-button small">Clear</button>
+                </div>
+                <div class="logs-content" id="logsContent">
+                    <div class="log-entry info">
+                        <span class="log-time">[SYSTEM]</span>
+                        <span class="log-message">Ready to connect wallet...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { BrowserProvider, Contract, getAddress } from "https://cdn.jsdelivr.net/npm/ethers@6.13.4/+esm";
+        import { initSDK, createInstance, SepoliaConfig, generateKeypair } from "https://cdn.zama.ai/relayer-sdk-js/0.2.0/relayer-sdk-js.js";
+
+        // ===== CONFIG =====
+        const CONFIG = {
+            CONTRACT_ADDRESS: "0x3A5d61fAD14C35D0F3480f2e0D6e792d92111981",
+            RELAYER_URL: "https://relayer.testnet.zama.cloud",
+            CHAIN_ID_HEX: "0xaa36a7",
+            NETWORK_NAME: "Sepolia"
+        };
+
+        // ===== CONTRACT ABI =====
+        const ABI = [
+            {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
+            {"inputs":[],"name":"EntityAlreadyExists","type":"error"},
+            {"inputs":[],"name":"EntityNotFound","type":"error"},
+            {"inputs":[],"name":"InvalidEntityId","type":"error"},
+            {"inputs":[],"name":"OnlyComplianceOfficer","type":"error"},
+            {"inputs":[],"name":"OnlyOwner","type":"error"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"uint256","name":"checkId","type":"uint256"}],"name":"ComplianceCheckRequested","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"officer","type":"address"}],"name":"ComplianceOfficerAdded","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"officer","type":"address"}],"name":"ComplianceOfficerRemoved","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"entityId","type":"uint256"}],"name":"SanctionedEntityAdded","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"entityId","type":"uint256"}],"name":"SanctionedEntityRemoved","type":"event"},
+            {"inputs":[{"internalType":"address","name":"officer","type":"address"}],"name":"addComplianceOfficer","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"externalEuint256","name":"nameHashHandle","type":"bytes32"},{"internalType":"externalEuint256","name":"countryCodeHandle","type":"bytes32"},{"internalType":"externalEaddress","name":"walletAddressHandle","type":"bytes32"},{"internalType":"bytes","name":"inputProof","type":"bytes"}],"name":"addSanctionedEntity","outputs":[{"internalType":"uint256","name":"entityId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"externalEuint256","name":"nameHashHandle","type":"bytes32"},{"internalType":"externalEuint256","name":"countryCodeHandle","type":"bytes32"},{"internalType":"externalEaddress","name":"walletAddressHandle","type":"bytes32"},{"internalType":"bytes","name":"inputProof","type":"bytes"}],"name":"checkCompliance","outputs":[{"internalType":"uint256","name":"checkId","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"checkCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"}],"name":"checkResultAccess","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"complianceChecks","outputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"euint8","name":"status","type":"bytes32"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"complianceOfficers","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"entityId","type":"uint256"}],"name":"deactivateSanctionedEntity","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"entityCounter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"getCheckCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"checkId","type":"uint256"}],"name":"getCheckStatus","outputs":[{"internalType":"euint8","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"checkId","type":"uint256"}],"name":"getCheckTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"checkId","type":"uint256"}],"name":"getCheckUser","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"getSanctionedEntityCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"checkId","type":"uint256"},{"internalType":"address","name":"grantee","type":"address"}],"name":"grantCheckResultAccess","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"officer","type":"address"}],"name":"isComplianceOfficer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"protocolId","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"pure","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"entityId","type":"uint256"}],"name":"reactivateSanctionedEntity","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"officer","type":"address"}],"name":"removeComplianceOfficer","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"checkId","type":"uint256"},{"internalType":"address","name":"revokee","type":"address"}],"name":"revokeCheckResultAccess","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"sanctionedEntities","outputs":[{"internalType":"euint256","name":"nameHash","type":"bytes32"},{"internalType":"euint256","name":"countryCode","type":"bytes32"},{"internalType":"eaddress","name":"walletAddress","type":"bytes32"},{"internalType":"ebool","name":"isActive","type":"bytes32"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}
+        ];
+
+        // ===== STATE =====
+        let provider, signer, address, contract, relayer;
+
+        // ===== HELPERS =====
+        const $ = id => document.getElementById(id);
+
+        function short(addr) {
+            if (!addr || addr === '—') return '—';
+            return addr.slice(0, 6) + '…' + addr.slice(-4);
+        }
+
+        function toHex(u8) {
+            if (typeof u8 === 'string') return u8;
+            return '0x' + Array.from(u8).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function hashString(str) {
+            let hash = 0n;
+            for (let i = 0; i < str.length; i++) {
+                hash = (hash * 31n + BigInt(str.charCodeAt(i))) % (2n ** 256n);
+            }
+            return hash;
+        }
+
+        function countryCodeToNumber(code) {
+            const normalized = code.toUpperCase().padEnd(3, '\0');
+            return BigInt(normalized.charCodeAt(0)) * 65536n +
+                   BigInt(normalized.charCodeAt(1)) * 256n +
+                   BigInt(normalized.charCodeAt(2));
+        }
+
+        // ===== LOGGING =====
+        function log(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="log-message">${msg}</span>
+            `;
+            $('logsContent').appendChild(entry);
+            $('logsContent').parentElement.scrollTop = $('logsContent').parentElement.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${msg}`);
+        }
+
+        $('clearLogs').onclick = () => {
+            $('logsContent').innerHTML = '';
+            log('Log cleared', 'info');
+        };
+
+        // ===== PROGRESS STEPS =====
+        function updateProgress(stepNum) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, idx) => {
+                const num = idx + 1;
+                step.classList.remove('active', 'completed');
+                if (num < stepNum) {
+                    step.classList.add('completed');
+                } else if (num === stepNum) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // ===== ROLE TABS =====
+        document.querySelectorAll('.role-tab').forEach(tab => {
+            tab.onclick = () => {
+                const role = tab.dataset.role;
+                document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                $('userPanel').classList.remove('active');
+                $('officerPanel').classList.remove('active');
+
+                if (role === 'user') {
+                    $('userPanel').classList.add('active');
+                    // Clear user form
+                    $('userName').value = '';
+                    $('userCountry').value = '';
+                    $('userWallet').value = '';
+                    // Hide results
+                    $('resultsContainer').style.display = 'none';
+                    // Reset progress
+                    updateProgress(1);
+                } else {
+                    $('officerPanel').classList.add('active');
+                    // Clear officer form
+                    $('entityName').value = '';
+                    $('entityCountry').value = '';
+                    $('entityWallet').value = '';
+                }
+
+                log(`Switched to ${role === 'user' ? 'User' : 'Compliance Officer'} mode`, 'info');
+            };
+        });
+
+        // ===== WALLET CONNECTION =====
+        $('connectWallet').onclick = async () => {
+            try {
+                // Disconnect if already connected
+                if (provider && address) {
+                    log('Disconnecting wallet...', 'info');
+                    provider = null;
+                    signer = null;
+                    address = null;
+                    contract = null;
+                    relayer = null;
+                    $('connectWallet').textContent = 'Connect Wallet';
+                    $('connectWallet').classList.remove('connected');
+                    $('networkStatus').textContent = 'Not Connected';
+                    $('walletStatus').textContent = '0x0...0000';
+                    log('✅ Wallet disconnected', 'success');
+                    return;
+                }
+
+                // Connect wallet
+                if (!window.ethereum) throw new Error('MetaMask not found');
+
+                log('Connecting to MetaMask...', 'info');
+                provider = new BrowserProvider(window.ethereum);
+                await provider.send('eth_requestAccounts', []);
+
+                const net = await provider.getNetwork();
+                if (net.chainId !== 11155111n) {
+                    log('⚠️ Wrong network, switching to Sepolia...', 'warning');
+                    try {
+                        await provider.send('wallet_switchEthereumChain', [{ chainId: CONFIG.CHAIN_ID_HEX }]);
+                    } catch (e) {
+                        log('❌ Please switch to Sepolia network manually', 'error');
+                        return;
+                    }
+                }
+
+                signer = await provider.getSigner();
+                address = await signer.getAddress();
+                contract = new Contract(getAddress(CONFIG.CONTRACT_ADDRESS), ABI, signer);
+
+                $('connectWallet').innerHTML = '<span class="button-content">Disconnect</span>';
+                $('connectWallet').classList.add('connected');
+                $('networkStatus').textContent = 'Sepolia Testnet';
+                $('walletStatus').textContent = short(address);
+                log(`✅ Connected: ${address}`, 'success');
+
+                await initRelayer();
+            } catch (e) {
+                log(`❌ Connection error: ${e.message}`, 'error');
+            }
+        };
+
+        async function initRelayer() {
+            try {
+                if (relayer) return relayer;
+                log('Initializing Zama Relayer SDK...', 'info');
+                await initSDK();
+                relayer = await createInstance({
+                    ...SepoliaConfig,
+                    relayerUrl: CONFIG.RELAYER_URL,
+                    network: window.ethereum,
+                    debug: true
+                });
+                log('✅ Relayer SDK initialized', 'success');
+                return relayer;
+            } catch (e) {
+                log(`❌ Relayer init error: ${e.message}`, 'error');
+                throw e;
+            }
+        }
+
+        // ===== COMPLIANCE CHECK =====
+        $('complianceForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            try {
+                if (!contract) {
+                    log('❌ Please connect wallet first', 'error');
+                    return;
+                }
+
+                const name = $('userName').value;
+                const country = $('userCountry').value;
+                const wallet = $('userWallet').value;
+
+                // Step 1: Encrypt
+                updateProgress(1);
+                log(`🔒 Encrypting data...`, 'info');
+
+                const nameHash = hashString(name);
+                const countryNum = countryCodeToNumber(country);
+
+                log(`Name hash: ${nameHash}`, 'info');
+                log(`Country code: ${countryNum}`, 'info');
+
+                const r = await initRelayer();
+                const enc = r.createEncryptedInput(getAddress(CONFIG.CONTRACT_ADDRESS), getAddress(address));
+
+                enc.add256(nameHash);
+                enc.add256(countryNum);
+                enc.addAddress(wallet);
+
+                const res = await enc.encrypt();
+
+                const handles = res.handles.map(h => typeof h === 'string' ? h : toHex(h));
+                const proof = typeof res.inputProof === 'string' ?
+                    (res.inputProof.startsWith('0x') ? res.inputProof : '0x' + res.inputProof) :
+                    toHex(res.inputProof);
+
+                log(`✅ Data encrypted`, 'success');
+
+                // Step 2: Send TX
+                updateProgress(2);
+                log('📤 Sending transaction...', 'info');
+
+                let tx, receipt;
+                try {
+                    const gasEstimate = await contract.checkCompliance.estimateGas(
+                        handles[0], handles[1], handles[2], proof
+                    );
+                    const gasLimit = gasEstimate * 120n / 100n;
+                    log(`⛽ Gas estimate: ${gasEstimate}`, 'info');
+
+                    tx = await contract.checkCompliance(
+                        handles[0], handles[1], handles[2], proof,
+                        { gasLimit }
+                    );
+                } catch (gasError) {
+                    log('⚠️ Gas estimation failed, using fixed gas limit...', 'warning');
+                    tx = await contract.checkCompliance(
+                        handles[0], handles[1], handles[2], proof,
+                        { gasLimit: 5000000 }
+                    );
+                }
+
+                log(`⏳ TX submitted: ${tx.hash}`, 'info');
+                log(`🔗 Etherscan: https://sepolia.etherscan.io/tx/${tx.hash}`, 'info');
+
+                receipt = await tx.wait();
+                log(`✅ TX confirmed in block ${receipt.blockNumber}`, 'success');
+
+                // Extract checkId from events
+                const event = receipt.logs.find(l => {
+                    try {
+                        return contract.interface.parseLog(l)?.name === 'ComplianceCheckRequested';
+                    } catch { return false; }
+                });
+
+                let checkId;
+                if (event) {
+                    const parsed = contract.interface.parseLog(event);
+                    checkId = parsed.args.checkId.toString();
+                    log(`✅ Check ID extracted: ${checkId}`, 'success');
+                } else {
+                    log('⚠️ Could not find ComplianceCheckRequested event', 'warning');
+                    checkId = 'Unknown';
+                }
+
+                // Step 3: Decrypt
+                updateProgress(3);
+                log('🔓 Starting decryption process...', 'info');
+
+                try {
+                    // Get encrypted status
+                    log(`Fetching encrypted status for checkId: ${checkId}...`, 'info');
+                    const encStatus = await contract.getCheckStatus(checkId);
+                    log(`✅ Encrypted status handle: ${encStatus}`, 'success');
+
+                    // Decrypt using EIP-712
+                    log('Generating keypair...', 'info');
+                    const kp = generateKeypair();
+                    const startTs = Math.floor(Date.now() / 1000).toString();
+                    const days = '7';
+
+                    log('Creating EIP-712 message...', 'info');
+                    const eip = relayer.createEIP712(kp.publicKey, [getAddress(CONFIG.CONTRACT_ADDRESS)], startTs, days);
+
+                    log('✍️ Requesting EIP-712 signature...', 'info');
+                    const sig = await signer.signTypedData(
+                        eip.domain,
+                        { UserDecryptRequestVerification: eip.types.UserDecryptRequestVerification },
+                        eip.message
+                    );
+                    log('✅ Signature received', 'success');
+
+                    log('Calling relayer.userDecrypt()...', 'info');
+                    const out = await relayer.userDecrypt(
+                        [{ handle: encStatus, contractAddress: getAddress(CONFIG.CONTRACT_ADDRESS) }],
+                        kp.privateKey,
+                        kp.publicKey,
+                        sig.replace(/^0x/, ''),
+                        [getAddress(CONFIG.CONTRACT_ADDRESS)],
+                        address,
+                        startTs,
+                        days
+                    );
+
+                    log(`✅ Decryption completed`, 'success');
+
+                    // Extract status value first
+                    const statusValue = out[encStatus] ?? out[Object.keys(out).find(k => k.toLowerCase() === encStatus.toLowerCase())];
+                    log(`Extracted status value: ${statusValue} (type: ${typeof statusValue})`, 'info');
+
+                    // Log output safely (convert BigInt to string)
+                    try {
+                        const safeOut = {};
+                        for (const key in out) {
+                            safeOut[key] = typeof out[key] === 'bigint' ? out[key].toString() : out[key];
+                        }
+                        log(`Full decrypt output: ${JSON.stringify(safeOut)}`, 'info');
+                    } catch (e) {
+                        log(`Decrypt output keys: ${Object.keys(out).join(', ')}`, 'info');
+                    }
+
+                    // Display results - check multiple types
+                    const numValue = Number(statusValue);
+                    const isCompliant = numValue === 0;
+                    log(`Final compliance result: ${isCompliant ? 'COMPLIANT' : 'NON-COMPLIANT'}`, isCompliant ? 'success' : 'warning');
+
+                    $('resultsContainer').style.display = 'block';
+                    $('checkId').textContent = checkId;
+                    $('checkTimestamp').textContent = new Date().toLocaleString();
+
+                    const statusEl = $('resultStatus');
+                    statusEl.className = 'result-status';
+                    if (isCompliant) {
+                        statusEl.classList.add('compliant');
+                        statusEl.textContent = '✅ COMPLIANT';
+                    } else {
+                        statusEl.classList.add('non-compliant');
+                        statusEl.textContent = '❌ NON-COMPLIANT';
+                    }
+
+                } catch (decryptError) {
+                    log(`❌ Decryption failed: ${decryptError.message}`, 'error');
+                    log(`Error stack: ${decryptError.stack}`, 'error');
+
+                    // Still show result container with error
+                    $('resultsContainer').style.display = 'block';
+                    $('checkId').textContent = checkId;
+                    $('checkTimestamp').textContent = new Date().toLocaleString();
+
+                    const statusEl = $('resultStatus');
+                    statusEl.className = 'result-status';
+                    statusEl.style.background = 'rgba(255, 170, 0, 0.1)';
+                    statusEl.style.borderColor = 'var(--warning-color)';
+                    statusEl.style.color = 'var(--warning-color)';
+                    statusEl.textContent = '⚠️ DECRYPTION ERROR';
+                }
+
+            } catch (e) {
+                log(`❌ Error: ${e.reason || e.message}`, 'error');
+                updateProgress(1);
+            }
+        };
+
+        // ===== ADD SANCTIONED ENTITY =====
+        $('sanctionForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            try {
+                if (!contract) {
+                    log('❌ Please connect wallet first', 'error');
+                    return;
+                }
+
+                const name = $('entityName').value;
+                const country = $('entityCountry').value;
+                const wallet = $('entityWallet').value;
+
+                log(`🔒 Encrypting sanctioned entity data...`, 'info');
+
+                const nameHash = hashString(name);
+                const countryNum = countryCodeToNumber(country);
+
+                const r = await initRelayer();
+                const enc = r.createEncryptedInput(getAddress(CONFIG.CONTRACT_ADDRESS), getAddress(address));
+
+                enc.add256(nameHash);
+                enc.add256(countryNum);
+                enc.addAddress(wallet);
+
+                const res = await enc.encrypt();
+
+                const handles = res.handles.map(h => typeof h === 'string' ? h : toHex(h));
+                const proof = typeof res.inputProof === 'string' ?
+                    (res.inputProof.startsWith('0x') ? res.inputProof : '0x' + res.inputProof) :
+                    toHex(res.inputProof);
+
+                log(`✅ Data encrypted`, 'success');
+                log('📤 Sending transaction...', 'info');
+
+                const tx = await contract.addSanctionedEntity(
+                    handles[0], handles[1], handles[2], proof,
+                    { gasLimit: 5000000 }
+                );
+
+                log(`⏳ TX submitted: ${tx.hash}`, 'info');
+                const receipt = await tx.wait();
+                log(`✅ Entity added in block ${receipt.blockNumber}`, 'success');
+
+                // Update count
+                const count = await contract.getSanctionedEntityCount();
+                $('entityCount').textContent = count.toString();
+
+            } catch (e) {
+                log(`❌ Error: ${e.reason || e.message}`, 'error');
+            }
+        };
+
+        // ===== INIT =====
+        log('🚀 C3 System initialized', 'success');
+        log(`📄 Contract: ${CONFIG.CONTRACT_ADDRESS}`, 'info');
+        log('🌐 Network: Sepolia Testnet', 'info');
+        log('💡 Click "Connect Wallet" to begin', 'info');
+
+        // Create particles
+        function createParticles() {
+            const container = $('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.background = 'var(--accent-cyan)';
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.opacity = Math.random() * 0.5;
+                particle.style.animation = `float ${5 + Math.random() * 10}s infinite`;
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+    </script>
+</body>
+</html>
