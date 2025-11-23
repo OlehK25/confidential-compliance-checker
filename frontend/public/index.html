@@ -962,13 +962,13 @@
 
     <!-- Scripts -->
     <script type="module">
-        import { BrowserProvider, Contract, getAddress } from "https://cdn.jsdelivr.net/npm/ethers@6.13.4/+esm";
-        import { initSDK, createInstance, SepoliaConfig, generateKeypair } from "https://cdn.zama.ai/relayer-sdk-js/0.2.0/relayer-sdk-js.js";
+        import { BrowserProvider, Contract, getAddress } from "https://cdn.jsdelivr.net/npm/ethers@6.15.0/+esm";
+        import { initSDK, createInstance, SepoliaConfig, generateKeypair } from "https://cdn.zama.org/relayer-sdk-js/0.3.0-5/relayer-sdk-js.js";
 
         // ===== CONFIG =====
         const CONFIG = {
-            CONTRACT_ADDRESS: "0x3A5d61fAD14C35D0F3480f2e0D6e792d92111981",
-            RELAYER_URL: "https://relayer.testnet.zama.cloud",
+            CONTRACT_ADDRESS: "0x5E259F1b0A30990d11b6a1b36a11392d6A6e4fBC",
+            RELAYER_URL: "https://relayer.testnet.zama.org",
             CHAIN_ID_HEX: "0xaa36a7",
             NETWORK_NAME: "Sepolia"
         };
@@ -1028,18 +1028,18 @@
         }
 
         function hashString(str) {
-            let hash = 0n;
+            let hash = 0;
             for (let i = 0; i < str.length; i++) {
-                hash = (hash * 31n + BigInt(str.charCodeAt(i))) % (2n ** 256n);
+                hash = (hash * 31 + str.charCodeAt(i)) % (2 ** 32);
             }
             return hash;
         }
 
         function countryCodeToNumber(code) {
             const normalized = code.toUpperCase().padEnd(3, '\0');
-            return BigInt(normalized.charCodeAt(0)) * 65536n +
-                   BigInt(normalized.charCodeAt(1)) * 256n +
-                   BigInt(normalized.charCodeAt(2));
+            return normalized.charCodeAt(0) * 65536 +
+                   normalized.charCodeAt(1) * 256 +
+                   normalized.charCodeAt(2);
         }
 
         // ===== LOGGING =====
@@ -1206,8 +1206,8 @@
                 const r = await initRelayer();
                 const enc = r.createEncryptedInput(getAddress(CONFIG.CONTRACT_ADDRESS), getAddress(address));
 
-                enc.add256(nameHash);
-                enc.add256(countryNum);
+                enc.add32(nameHash);
+                enc.add32(countryNum);
                 enc.addAddress(wallet);
 
                 const res = await enc.encrypt();
@@ -1386,8 +1386,8 @@
                 const r = await initRelayer();
                 const enc = r.createEncryptedInput(getAddress(CONFIG.CONTRACT_ADDRESS), getAddress(address));
 
-                enc.add256(nameHash);
-                enc.add256(countryNum);
+                enc.add32(nameHash);
+                enc.add32(countryNum);
                 enc.addAddress(wallet);
 
                 const res = await enc.encrypt();

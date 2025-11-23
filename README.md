@@ -65,9 +65,9 @@ C3 allows users to check their compliance status **without revealing personal in
 
 ## 📜 Smart Contract
 
-**Deployed Contract (Sepolia):** `0x3A5d61fAD14C35D0F3480f2e0D6e792d92111981`
+**Deployed Contract (Sepolia):** `0x6bdFA72d65533c8981EBdC7096e470609BEA9E5D`
 
-**Etherscan:** [View on Sepolia](https://sepolia.etherscan.io/address/0x3A5d61fAD14C35D0F3480f2e0D6e792d92111981)
+**Etherscan:** [View on Sepolia](https://sepolia.etherscan.io/address/0x6bdFA72d65533c8981EBdC7096e470609BEA9E5D)
 
 ### Core Functions
 
@@ -137,8 +137,8 @@ struct ComplianceCheck {
 ### Tech Stack
 
 - **Frontend:** Vanilla JavaScript (ES6 modules)
-- **Blockchain:** Ethers.js v6.13.4
-- **FHE SDK:** Zama Relayer SDK v0.2.0
+- **Blockchain:** Ethers.js v6.15.0
+- **FHE SDK:** Zama Relayer SDK v0.3.0-5
 - **Smart Contracts:** Solidity 0.8.24 + Zama FHEVM
 - **Network:** Ethereum Sepolia Testnet
 
@@ -152,7 +152,6 @@ struct ComplianceCheck {
 - npm v7+
 - MetaMask browser extension
 - Sepolia testnet ETH ([Faucet](https://sepoliafaucet.com))
-- Python 3.x (for frontend server)
 
 ### 1. Clone Repository
 
@@ -171,7 +170,20 @@ npm install
 npm run compile
 ```
 
-### 3. Run Frontend
+### 3. Run Frontend (HTTPS Recommended)
+
+**Option A: HTTPS Server** (supports EIP-712 signed decrypt)
+
+```bash
+cd frontend
+node server.js
+```
+
+Open browser: **https://localhost:8443**
+
+⚠️ Accept self-signed certificate in browser
+
+**Option B: HTTP Server** (basic testing only)
 
 ```bash
 cd frontend/public
@@ -245,7 +257,7 @@ npx hardhat deploy --network sepolia
 ### Verify Contract
 
 ```bash
-npx hardhat verify --network sepolia 0x3A5d61fAD14C35D0F3480f2e0D6e792d92111981
+npx hardhat verify --network sepolia 0x6bdFA72d65533c8981EBdC7096e470609BEA9E5D
 ```
 
 ---
@@ -268,12 +280,13 @@ npx hardhat verify --network sepolia <CONTRACT_ADDRESS>
 ### Frontend Development
 
 ```bash
-# Run with Python
+# HTTPS server (recommended for signed decrypt)
+cd frontend
+node server.js
+
+# HTTP server (basic testing only)
 cd frontend/public
 python3 -m http.server 8080
-
-# Or with Node.js http-server
-npx http-server frontend/public -p 8080
 ```
 
 ### Testing
@@ -296,15 +309,16 @@ confidential-compliance-checker/
 ├── contracts/
 │   └── ConfidentialComplianceChecker.sol   # Main contract
 ├── frontend/
+│   ├── server.js                            # HTTPS server (signed decrypt)
 │   └── public/
 │       └── index.html                       # Single-page application
 ├── deploy/
 │   └── deploy.ts                            # Deployment script
 ├── test/
-│   └── FHECounter.ts                        # Tests
-├── hardhat.config.ts                         # Hardhat config
+│   └── ConfidentialComplianceChecker.ts    # Tests
+├── hardhat.config.ts                        # Hardhat config
 ├── package.json
-└── README.md                                 # This documentation
+└── README.md                                # This documentation
 ```
 
 ---
@@ -372,9 +386,13 @@ npm run test         # Run tests
 npm run deploy       # Deploy to network
 npm run clean        # Clean artifacts
 
-# Frontend development
+# Frontend development (HTTPS recommended)
+cd frontend
+node server.js                      # HTTPS: https://localhost:8443
+
+# Or HTTP (basic testing)
 cd frontend/public
-python3 -m http.server 8080    # Start dev server
+python3 -m http.server 8080        # HTTP: http://localhost:8080
 ```
 
 ---
